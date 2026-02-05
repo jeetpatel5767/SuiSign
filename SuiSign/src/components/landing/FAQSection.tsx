@@ -35,9 +35,9 @@ const faqs = [
 
 const FAQSection = () => {
   return (
-    <section id="faq" className="py-20 lg:py-32 gradient-hero relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+    <section id="faq" className="py-20 lg:py-32 relative overflow-hidden">
+      {/* Background decoration
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl pointer-events-none" /> */}
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}

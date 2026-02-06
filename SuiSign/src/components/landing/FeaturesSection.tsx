@@ -1,49 +1,8 @@
-import { Clock, Shield, Users, CheckCircle, FileText, Lock, Zap, Globe, Sparkles, ArrowUpRight } from "lucide-react";
+import { Clock, Shield, Users, Sparkles, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const features = [
-  {
-    icon: Clock,
-    title: "Sign documents in minutes, not days",
-    description: "Upload, add signers, place signature fields, and send for signing in under 5 minutes. No more waiting for physical documents or complex workflows.",
-    highlight: true,
-  },
-  {
-    icon: Shield,
-    title: "Keep every agreement organized and verifiable",
-    description: "All your documents in one place with blockchain-verified signatures. Search, filter, and access any agreement instantly with complete audit trails.",
-    highlight: false,
-  },
-  {
-    icon: Users,
-    title: "Collaborate with clarity and trust",
-    description: "Add multiple signers with specific roles. Everyone knows exactly where to sign, and all parties can verify the authenticity of every signature.",
-    highlight: false,
-  },
-];
 
-const additionalFeatures = [
-  {
-    icon: FileText,
-    title: "Smart Document Management",
-    description: "Gmail-like interface to manage all your agreements with folders, filters, and powerful search.",
-  },
-  {
-    icon: Lock,
-    title: "Identity Verification",
-    description: "Optional identity verification ensures signers are who they claim to be.",
-  },
-  {
-    icon: Zap,
-    title: "Instant Notifications",
-    description: "Real-time updates when documents are viewed, signed, or need attention.",
-  },
-  {
-    icon: Globe,
-    title: "Works Anywhere",
-    description: "Sign from any device, anywhere in the world with our responsive web platform.",
-  },
-];
+
 
 const FeaturesSection = () => {
   return (
@@ -77,14 +36,14 @@ const FeaturesSection = () => {
             {
               icon: Clock,
               label: "INCREASE PRODUCTIVITY",
-              title: "Sign documents in minutes, not days",
+              title: "Sign documents in minutes.",
               description: "Create, send, and finalize agreements faster with automated on-chain signing flows. Sui Sign with automated on-chain signing flows. Sui Sign every signature instant on the Sui blockchain.",
               buttonText: "Faster by default",
             },
             {
               icon: Shield,
               label: "BETTER ORGANIZATION",
-              title: "Keep every agreement organized and verifiable",
+              title: "Keep everything organized.",
               description: "All documents, signatures, and versions live in one secure, on-chain workspace. Nothing is lost, nothing is altered, and every action remains permanently accessible whenever you need proof.",
               buttonText: "Source of truth",
             },
@@ -157,34 +116,7 @@ const FeaturesSection = () => {
           ))}
         </div>
 
-        {/* Additional Features Grid */}
-        <div className="text-center mb-12">
-          <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
-            Solutions for Every Team
-          </h3>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Powerful features that adapt to your workflow
-          </p>
-        </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {additionalFeatures.map((feature) => (
-            <div
-              key={feature.title}
-              className="glass-card rounded-2xl p-6 hover:shadow-elevated transition-shadow group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-6 h-6 text-primary" />
-              </div>
-              <h4 className="text-lg font-semibold text-foreground mb-2">
-                {feature.title}
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

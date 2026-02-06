@@ -94,14 +94,13 @@ const FAQSection = () => {
                     >
                       0{index + 1}
                     </span>
-                    <h3
-                      className={`text-xl lg:text-2xl font-normal leading-snug ${isActive
-                        ? "text-[#1a1615]"
-                        : "text-[#1a1615]"
+                    <h2
+                      className={`text-[16px] lg:text-[24px] font-normal leading-snug ${isActive ? "text-[#1a1615]" : "text-[#1a1615]"
                         }`}
                     >
                       {faq.question}
-                    </h3>
+                    </h2>
+
                   </div>
                 </button>
               );

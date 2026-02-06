@@ -5,108 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import BG from "../../assets/BG.png";
-import Image1 from "../../assets/1.png";
-import Image2 from "../../assets/2.png";
-import Image3 from "../../assets/3.png";
-import Image4 from "../../assets/4.png";
-import Image5 from "../../assets/5.png";
 import Cloud from "../../assets/Cloud.png";
 import Meteor from "../../assets/Meteor.png";
-
+import { contentSections } from "../../data/Solution";
 
 const Solution = () => {
-    const contentSections = [
-        {
-            id: 1,
-            title: "Proposal Management",
-            description:
-                "Create, manage, and finalize proposals with complete visibility and control. Sui Sign ensures every proposal version, approval, and signature is securely recorded and easy to track.",
-            image: Image1,
-            features: [
-                {
-                    title: "Version Control",
-                    description: "Track changes and keep a clear revision history."
-                },
-                {
-                    title: "Approval Workflow",
-                    description: "Send proposals to the right people and collect signatures fast."
-                }
-            ]
-        },
-        {
-            id: 2,
-            title: "Document Collaboration",
-            description:
-                "Collaborate on documents in real time while maintaining integrity and accountability. Every contribution is transparent, traceable, and protected on-chain.",
-            image: Image2,
-            features: [
-                {
-                    title: "Real-Time Editing",
-                    description: "Collaborate easily with real-time team updates."
-                },
-                {
-                    title: "Comments & Review",
-                    description: "Comment, review, and request edits in one place."
-                }
-            ]
-        },
-        {
-            id: 3,
-            title: "Military-Grade Security",
-            description:
-                "Protect sensitive documents with enterprise-level security backed by blockchain verification. Sui Sign ensures data remains confidential, tamper-proof, and trusted.",
-            image: Image3,
-            features: [
-                {
-                    title: "End-to-End Encryption",
-                    description: "Protect documents and signatures with strong encryption."
-                },
-                {
-                    title: "On-Chain Integrity",
-                    description: "Ensure authenticity with tamper-proof blockchain records."
-                }
-            ]
-        },
-        {
-            id: 4,
-            title: "Signature Tracking",
-            description:
-                "Monitor every signature from request to completion with complete transparency. Know exactly who signed, when they signed, and what was agreed upon.",
-            image: Image4,
-            features: [
-                {
-                    title: "Real-Time Status",
-                    description: "Monitor signature status with instant notifications."
-                },
-                {
-                    title: "Audit Trails",
-                    description: "Keep a permanent audit trail for compliance."
-                }
-            ]
-        },
-        {
-            id: 5,
-            title: "Team Communication",
-            description:
-                "Keep teams aligned throughout the signing process with clear, contextual communication. Reduce friction and ensure everyone stays informed.",
-            image: Image5,
-            features: [
-                {
-                    title: "In-Context Messaging",
-                    description: "Communicate directly inside documents to stay aligned."
-                },
-                {
-                    title: "Notification & Alerts",
-                    description: "Get instant alerts when actions are needed or done."
-                }
-            ]
-        },
-    ];
-
     const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
 
-    /* 🔹 Image switching based on left content */
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -119,26 +25,20 @@ const Solution = () => {
                     }
                 });
             },
-            {
-                rootMargin: "-45% 0px -45% 0px",
-                threshold: 0,
-            }
+            { rootMargin: "-45% 0px -45% 0px" }
         );
 
-        sectionRefs.current.forEach((section) => {
-            if (section) observer.observe(section);
-        });
-
+        sectionRefs.current.forEach((s) => s && observer.observe(s));
         return () => observer.disconnect();
     }, []);
 
     return (
         <section id="features" className="relative">
-            {/* ================= HEADER (NORMAL FLOW) ================= */}
+            {/* ================= HEADER ================= */}
             <div className="container mx-auto px-4 lg:px-16">
-                <div className="text-center max-w-3xl mx-auto py-20">
+                <div className="text-center max-w-3xl mx-auto py-16 lg:py-20">
                     <div
-                        className="inline-flex items-center gap-2 px-4 h-9 rounded-full border mb-6"
+                        className="inline-flex items-center gap-2 px-4 h-9 rounded-full border mb-5"
                         style={{
                             borderColor: "#bfdbfe",
                             backgroundColor: "#2684ff",
@@ -155,21 +55,24 @@ const Solution = () => {
                     </div>
 
                     <h2
-                        className="font-semibold mb-4"
+                        className="font-semibold mb-4 leading-tight"
                         style={{ fontSize: "54px", color: "#1a1615" }}
                     >
                         Solutions For Every Team
                     </h2>
 
-                    <p style={{ fontSize: "20px", color: "#6d6d6d" }}>
+                    <p
+                        className="text-[16px] lg:text-[20px]"
+                        style={{ color: "#6d6d6d" }}
+                    >
                         Customizable workflow for any team size or industry.
                     </p>
                 </div>
             </div>
 
-            {/* ============ CONTENT WRAPPER (SCROLL AREA) ============ */}
+            {/* ================= CONTENT ================= */}
             <div className="container mx-auto px-4 lg:px-16">
-                <div className="flex gap-16">
+                <div className="flex flex-col lg:flex-row gap-16">
                     {/* LEFT CONTENT */}
                     <div className="w-full lg:w-1/2">
                         {contentSections.map((section, index) => (
@@ -177,23 +80,39 @@ const Solution = () => {
                                 key={section.id}
                                 ref={(el) => (sectionRefs.current[index] = el)}
                                 data-index={index}
-                                className="min-h-screen flex flex-col justify-center space-y-6"
+                                className="flex flex-col justify-start space-y-4 py-16 md:py-24 lg:min-h-screen"
                             >
+                                {/* MOBILE VISUAL (INLINE, NON-STICKY) */}
+                                <div className="block md:hidden mb-6">
+                                    <div className="relative h-[220px] rounded-2xl overflow-hidden">
+                                        <img
+                                            src={BG}
+                                            alt="Background"
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                        />
+                                        <img
+                                            src={section.image}
+                                            alt="Feature"
+                                            className="absolute inset-0 w-full h-full object-contain p-6"
+                                        />
+                                    </div>
+                                </div>
+
                                 <h3
-                                    className="font-semibold"
+                                    className="text-2xl font-normal"
                                     style={{
-                                        fontSize: "48px",
+                                        fontSize: "32px",
                                         color: "#1a1615",
-                                        lineHeight: "1.2",
+                                        lineHeight: "1.25",
                                     }}
                                 >
                                     {section.title}
                                 </h3>
 
                                 <p
-                                    className="max-w-[480px]"
+                                    className="max-w-full lg:max-w-[480px]"
                                     style={{
-                                        fontSize: "18px",
+                                        fontSize: "16px",
                                         color: "#6d6d6d",
                                         lineHeight: "1.6",
                                     }}
@@ -201,26 +120,27 @@ const Solution = () => {
                                     {section.description}
                                 </p>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-24 max-w-[560px] pt-8">
+                                {/* FEATURES — MOBILE STACKED */}
+                                <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2 md:gap-24 md:pt-8 md:max-w-[560px]">
                                     {section.features?.map((feature, i) => (
                                         <div
                                             key={i}
-                                            className="rounded-2xl p-7 w-[320px]"
+                                            className="rounded-xl p-5 w-full md:w-[320px]"
                                             style={{
-                                                backgroundColor: "#F6F8FB", // soft neutral
-                                                border: "1px solid rgba(26, 22, 21, 0.18)", // subtle dark border
+                                                backgroundColor: "#F6F8FB",
+                                                border:
+                                                    "1px solid rgba(26, 22, 21, 0.18)",
                                             }}
                                         >
-                                            {/* Icon */}
                                             <div
-                                                className="w-12 h-12 rounded-xl mb-5"
+                                                className="w-10 h-10 rounded-lg mb-4"
                                                 style={{ backgroundColor: "#2684ff" }}
                                             />
 
                                             <h4
-                                                className="font-medium mb-2"
+                                                className="font-medium mb-1 "
                                                 style={{
-                                                    fontSize: "18px",
+                                                    fontSize: "16px",
                                                     color: "#1a1615",
                                                 }}
                                             >
@@ -231,7 +151,7 @@ const Solution = () => {
                                                 style={{
                                                     fontSize: "14px",
                                                     color: "#6d6d6d",
-                                                    lineHeight: "1.6",
+                                                    lineHeight: "1.5",
                                                 }}
                                             >
                                                 {feature.description}
@@ -239,19 +159,17 @@ const Solution = () => {
                                         </div>
                                     ))}
                                 </div>
-
                             </div>
                         ))}
                     </div>
 
-                    {/* RIGHT VISUAL — STICKY ONLY INSIDE THIS WRAPPER */}
-                    <div className="hidden lg:block w-1/2">
+                    {/* ================= TABLET + DESKTOP VISUAL (UNCHANGED) ================= */}
+                    <div className="hidden md:block w-1/2">
                         <div className="sticky top-24">
                             <div
                                 className="relative w-full max-w-[667px] mx-auto overflow-hidden"
                                 style={{ height: "641px" }}
                             >
-                                {/* BG */}
                                 <img
                                     src={BG}
                                     alt="Background"
@@ -259,7 +177,6 @@ const Solution = () => {
                                     style={{ objectPosition: "top left" }}
                                 />
 
-                                {/* Overlay image changes */}
                                 <div className="absolute inset-0 flex items-center justify-center p-8">
                                     <AnimatePresence mode="wait">
                                         <motion.img
@@ -271,63 +188,54 @@ const Solution = () => {
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -40, scale: 0.96 }}
                                             transition={{ duration: 0.5, ease: "easeOut" }}
-                                            style={{
-                                                filter:
-                                                    "drop-shadow(0 10px 30px rgba(0,0,0,0.2))",
-                                                objectPosition: "top left"
-                                            }}
                                         />
                                     </AnimatePresence>
                                 </div>
 
-                                {/* Meteor Image - Upper Left Corner */}
                                 <img
                                     src={Meteor}
-                                    alt="Meteor decoration"
+                                    alt="Meteor"
                                     className="absolute pointer-events-none"
                                     style={{
                                         width: "550px",
-                                        height: "auto",
                                         top: "-10px",
                                         left: "-80px",
-                                        zIndex: 10
+                                        zIndex: 10,
                                     }}
                                 />
 
-                                {/* Cloud Images - Animated based on scroll */}
-                                {/* Left Cloud - Lower Left Corner */}
                                 <motion.img
                                     src={Cloud}
-                                    alt="Cloud decoration"
+                                    alt="Cloud"
                                     className="absolute pointer-events-none"
                                     style={{
                                         width: "520px",
-                                        height: "auto",
                                         left: "-320px",
-                                        zIndex: 10
+                                        zIndex: 10,
                                     }}
                                     animate={{
-                                        bottom: `${20 + (activeIndex * 125)}px` // Moves from bottom (20px) to top (520px at index 4)
+                                        bottom: `${20 + activeIndex * 125}px`,
                                     }}
                                     transition={{ duration: 0.6, ease: "easeOut" }}
                                 />
 
-                                {/* Right Cloud - Lower Right Corner (Inverted) */}
                                 <motion.img
                                     src={Cloud}
-                                    alt="Cloud decoration"
+                                    alt="Cloud"
                                     className="absolute pointer-events-none"
                                     style={{
                                         width: "520px",
-                                        height: "auto",
                                         right: "-320px",
-                                        transform: "scaleX(-1)", // Inverted horizontally
-                                        zIndex: 10
+                                        transform: "scaleX(-1)",
+                                        zIndex: 10,
                                     }}
                                     animate={{
-                                        bottom: `${60 + (activeIndex * 50)}px` // Starts higher (60px) and moves to 460px at index 4
+                                        bottom: `${60 + activeIndex * 50}px`,
                                     }}
-                                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                                    transition={{
+                                        duration: 0.8,
+                                        ease: "easeInOut",
+                                    }}
                                 />
                             </div>
                         </div>

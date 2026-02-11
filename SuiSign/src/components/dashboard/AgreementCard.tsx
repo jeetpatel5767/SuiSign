@@ -1,13 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { FileText, Users, Shield, Calendar } from "lucide-react";
+import { Shield, ArrowRight, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Agreement } from "@/types/agreement";
 import AgreementStatusBadge from "./AgreementStatusBadge";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 
 interface AgreementCardProps {
   agreement: Agreement;
 }
+
+const statusAccent: Record<string, string> = {
+  draft: "border-l-slate-300",
+  waiting_for_signatures: "border-l-amber-400",
+  action_required: "border-l-blue-500",
+  completed: "border-l-emerald-500",
+  expired: "border-l-gray-300",
+};
 
 const AgreementCard = ({ agreement }: AgreementCardProps) => {
   const navigate = useNavigate();
@@ -18,43 +26,82 @@ const AgreementCard = ({ agreement }: AgreementCardProps) => {
     }
   };
 
+  // Show first 3 signer initials with their roles
+  const displaySigners = agreement.signers.slice(0, 3);
+  const remaining = agreement.signers.length - 3;
+
   return (
     <Card
-      className="group cursor-pointer hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200"
+      className={`group cursor-pointer border-l-[3px] ${statusAccent[agreement.status]} hover:shadow-soft transition-all duration-150`}
       onClick={handleClick}
     >
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-              <FileText className="w-5 h-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-                {agreement.name}
-              </h3>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {formatDistanceToNow(agreement.lastUpdated, { addSuffix: true })}
-              </p>
-            </div>
+      <CardContent className="p-4">
+        {/* Top: Status + Verification */}
+        <div className="flex items-center justify-between mb-2.5">
+          <AgreementStatusBadge status={agreement.status} />
+          <div className="flex items-center gap-2">
+            {agreement.requireVerification && (
+              <span className="text-[10px] text-primary flex items-center gap-0.5 bg-primary/5 px-1.5 py-0.5 rounded">
+                <Shield className="w-3 h-3" />
+                Verified
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <AgreementStatusBadge status={agreement.status} />
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <Users className="w-3.5 h-3.5" />
-              <span>{agreement.signers.length} signers</span>
-            </div>
-          </div>
-          {agreement.requireVerification && (
-            <div className="flex items-center gap-1 text-xs text-primary">
-              <Shield className="w-3.5 h-3.5" />
-              <span>Verified</span>
-            </div>
+        {/* Title */}
+        <h3 className="text-[13px] font-medium text-foreground leading-snug mb-1 group-hover:text-primary transition-colors line-clamp-2">
+          {agreement.name}
+        </h3>
+
+        {/* Meta: date + expiry */}
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-3">
+          <span>Updated {formatDistanceToNow(agreement.lastUpdated, { addSuffix: false })} ago</span>
+          {agreement.expiryDate && (
+            <>
+              <span className="text-border">·</span>
+              <span className="flex items-center gap-0.5 text-amber-600">
+                <Clock className="w-3 h-3" />
+                Expires {format(agreement.expiryDate, "MMM d")}
+              </span>
+            </>
           )}
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-border/50 pt-3">
+          {/* Signers */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-1.5">
+                {displaySigners.map((signer, i) => (
+                  <div
+                    key={i}
+                    className="w-6 h-6 rounded-full border-2 border-card flex items-center justify-center text-[9px] font-medium"
+                    style={{ backgroundColor: signer.color + '20', color: signer.color }}
+                    title={`${signer.role}: ${signer.email}`}
+                  >
+                    {signer.email.charAt(0).toUpperCase()}
+                  </div>
+                ))}
+                {remaining > 0 && (
+                  <div className="w-6 h-6 rounded-full bg-muted border-2 border-card flex items-center justify-center text-[9px] font-medium text-muted-foreground">
+                    +{remaining}
+                  </div>
+                )}
+              </div>
+              <span className="text-[11px] text-muted-foreground">
+                {agreement.signers.length} signer{agreement.signers.length !== 1 && 's'}
+              </span>
+            </div>
+
+            {/* Action hint for actionable items */}
+            {agreement.status === "action_required" && (
+              <span className="text-[11px] text-primary font-medium flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                Sign <ArrowRight className="w-3 h-3" />
+              </span>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

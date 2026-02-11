@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Plus, Trash2, Move } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Trash2, MousePointer2, CheckCircle } from "lucide-react";
 import { Signer, SignatureField } from "@/types/agreement";
+import { cn } from "@/lib/utils";
 
 interface StepPlaceSignaturesProps {
   signers: Signer[];
@@ -17,7 +17,6 @@ const StepPlaceSignatures = ({
   const [selectedSigner, setSelectedSigner] = useState<string | null>(
     signers[0]?.id || null
   );
-  const [isDragging, setIsDragging] = useState(false);
 
   const addSignatureField = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!selectedSigner) return;
@@ -51,119 +50,143 @@ const StepPlaceSignatures = ({
     return signers.find((s) => s.id === signerId)?.role || "Unknown";
   };
 
+  const signersWithFields = new Set(signatureFields.map((f) => f.signerId));
+  const allSignersHaveFields = signers.every((s) => signersWithFields.has(s.id));
+
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Place Signature Fields
-        </h2>
-        <p className="text-muted-foreground">
-          Select a signer and click on the document to place signature fields.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
+            Place Signature Fields
+          </h2>
+          <p className="text-base text-muted-foreground max-w-lg">
+            Select a signer, then click on the document to place their signature field.
+          </p>
+        </div>
+        <span className={cn(
+          "text-sm px-3 py-1.5 rounded-lg tabular-nums flex-shrink-0 mt-1",
+          allSignersHaveFields
+            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
+            : "bg-muted text-muted-foreground"
+        )}>
+          {signatureFields.length} field{signatureFields.length !== 1 ? "s" : ""} placed
+        </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Signer Selection */}
-        <div className="space-y-3">
-          <h3 className="font-medium text-foreground">Signers</h3>
-          <div className="space-y-2">
-            {signers.map((signer) => {
-              const fieldCount = signatureFields.filter(
-                (f) => f.signerId === signer.id
-              ).length;
+      {/* Signer selection — horizontal cards above the doc */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {signers.map((signer) => {
+          const fieldCount = signatureFields.filter(
+            (f) => f.signerId === signer.id
+          ).length;
+          const isSelected = selectedSigner === signer.id;
+          const hasField = fieldCount > 0;
 
-              return (
-                <button
-                  key={signer.id}
-                  onClick={() => setSelectedSigner(signer.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left ${
-                    selectedSigner === signer.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  <div
-                    className="w-4 h-4 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: signer.color }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground truncate">
-                      {signer.role}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {signer.email}
-                    </p>
-                  </div>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                    {fieldCount}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="text-sm text-muted-foreground pt-4 border-t border-border">
-            <p className="flex items-center gap-2 mb-2">
-              <Move className="w-4 h-4" />
-              Click on the document to add fields
-            </p>
-            <p>Each signer needs at least one signature field.</p>
-          </div>
-        </div>
-
-        {/* Document Preview with Signature Fields */}
-        <div className="lg:col-span-3">
-          <div
-            className="relative bg-white border border-border rounded-lg shadow-sm aspect-[8.5/11] cursor-crosshair overflow-hidden"
-            onClick={addSignatureField}
-          >
-            {/* Mock PDF content */}
-            <div className="absolute inset-0 p-8 pointer-events-none">
-              <div className="space-y-4">
-                <div className="h-8 bg-muted/30 rounded w-3/4" />
-                <div className="h-4 bg-muted/20 rounded w-full" />
-                <div className="h-4 bg-muted/20 rounded w-full" />
-                <div className="h-4 bg-muted/20 rounded w-5/6" />
-                <div className="h-4 bg-muted/20 rounded w-full mt-6" />
-                <div className="h-4 bg-muted/20 rounded w-full" />
-                <div className="h-4 bg-muted/20 rounded w-4/5" />
-                <div className="h-4 bg-muted/20 rounded w-full mt-6" />
-                <div className="h-4 bg-muted/20 rounded w-full" />
-                <div className="h-4 bg-muted/20 rounded w-3/4" />
-              </div>
-            </div>
-
-            {/* Signature Fields */}
-            {signatureFields.map((field) => (
+          return (
+            <button
+              key={signer.id}
+              onClick={() => setSelectedSigner(signer.id)}
+              className={cn(
+                "flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-left transition-all flex-shrink-0",
+                isSelected
+                  ? "border-primary/40 bg-primary/5 shadow-sm"
+                  : "border-border hover:border-primary/25 bg-card"
+              )}
+            >
               <div
-                key={field.id}
-                className="absolute border-2 rounded-md flex items-center justify-between px-2 group"
-                style={{
-                  left: `${field.x}%`,
-                  top: `${field.y}%`,
-                  width: `${field.width}%`,
-                  height: `${field.height}%`,
-                  borderColor: getSignerColor(field.signerId),
-                  backgroundColor: `${getSignerColor(field.signerId)}15`,
-                }}
-                onClick={(e) => e.stopPropagation()}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                style={{ backgroundColor: signer.color }}
               >
-                <span
-                  className="text-xs font-medium truncate"
-                  style={{ color: getSignerColor(field.signerId) }}
-                >
-                  {getSignerLabel(field.signerId)}
-                </span>
-                <button
-                  onClick={() => removeField(field.id)}
-                  className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-destructive/20 rounded transition-opacity"
-                >
-                  <Trash2 className="w-3 h-3 text-destructive" />
-                </button>
+                {signer.email.charAt(0).toUpperCase() || "?"}
               </div>
-            ))}
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground truncate leading-tight">
+                  {signer.role}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">{signer.email}</p>
+              </div>
+              {hasField ? (
+                <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 ml-1" />
+              ) : (
+                <span className="text-xs text-amber-500 flex-shrink-0 ml-1 whitespace-nowrap">
+                  Needs field
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Document Preview — full width */}
+      <div
+        className="relative bg-white dark:bg-white border border-border rounded-xl shadow-sm aspect-[8.5/11] cursor-crosshair overflow-hidden"
+        onClick={addSignatureField}
+      >
+        {/* Header bar */}
+        <div className="absolute top-0 left-0 right-0 h-9 bg-slate-50 border-b border-slate-200 flex items-center px-4">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+          </div>
+          <span className="text-[10px] text-slate-400 ml-3">Document Preview</span>
+        </div>
+
+        {/* Mock PDF content */}
+        <div className="absolute top-9 inset-x-0 bottom-0 p-10 pointer-events-none">
+          <div className="space-y-3">
+            <div className="h-6 bg-slate-100 rounded w-2/3" />
+            <div className="h-px bg-slate-100 w-full mt-3 mb-3" />
+            <div className="h-3 bg-slate-50 rounded w-full" />
+            <div className="h-3 bg-slate-50 rounded w-full" />
+            <div className="h-3 bg-slate-50 rounded w-5/6" />
+            <div className="h-3 bg-slate-50 rounded w-full mt-5" />
+            <div className="h-3 bg-slate-50 rounded w-full" />
+            <div className="h-3 bg-slate-50 rounded w-4/5" />
+            <div className="h-3 bg-slate-50 rounded w-full mt-5" />
+            <div className="h-3 bg-slate-50 rounded w-full" />
+            <div className="h-3 bg-slate-50 rounded w-3/4" />
+            <div className="h-3 bg-slate-50 rounded w-full mt-5" />
+            <div className="h-3 bg-slate-50 rounded w-2/3" />
           </div>
         </div>
+
+        {/* Signature Fields */}
+        {signatureFields.map((field) => (
+          <div
+            key={field.id}
+            className="absolute border-2 rounded-md flex items-center justify-between px-2 group"
+            style={{
+              left: `${field.x}%`,
+              top: `${field.y}%`,
+              width: `${field.width}%`,
+              height: `${field.height}%`,
+              borderColor: getSignerColor(field.signerId),
+              backgroundColor: `${getSignerColor(field.signerId)}12`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              className="text-xs font-medium truncate"
+              style={{ color: getSignerColor(field.signerId) }}
+            >
+              {getSignerLabel(field.signerId)}
+            </span>
+            <button
+              onClick={() => removeField(field.id)}
+              className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-destructive/10 rounded transition-opacity"
+            >
+              <Trash2 className="w-3 h-3 text-destructive" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Hint */}
+      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <MousePointer2 className="w-4 h-4" />
+        <p>Click anywhere on the document to add a signature field for the selected signer.</p>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { FileText, Users, Shield, Calendar, CheckCircle } from "lucide-react";
+import { FileText, Shield, Calendar, Lock, Clock, Send } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -37,84 +37,100 @@ const StepReviewSettings = ({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Review & Settings
+        <h2 className="text-2xl font-semibold text-foreground mb-2">
+          Review & Send
         </h2>
-        <p className="text-muted-foreground">
-          Review your agreement details and configure additional settings before
-          sending.
+        <p className="text-base text-muted-foreground max-w-lg">
+          Double-check everything before sending your agreement for signing.
         </p>
       </div>
 
-      {/* Summary Card */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-border">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <FileText className="w-6 h-6 text-primary" />
+      {/* Three stat cards in a row */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-card border border-border rounded-xl p-5 text-center">
+          <p className="text-3xl font-semibold text-foreground tabular-nums">{signers.length}</p>
+          <p className="text-sm text-muted-foreground mt-1">Signers</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-5 text-center">
+          <p className="text-3xl font-semibold text-foreground tabular-nums">{signatureFields.length}</p>
+          <p className="text-sm text-muted-foreground mt-1">Signature Fields</p>
+        </div>
+        <div className="bg-card border border-border rounded-xl p-5 text-center">
+          <p className="text-3xl font-semibold text-foreground tabular-nums">1</p>
+          <p className="text-sm text-muted-foreground mt-1">Page</p>
+        </div>
+      </div>
+
+      {/* Document + Signers — two column */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Document card */}
+        <div className="md:col-span-2 bg-card border border-border rounded-xl p-5 space-y-4">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Document
+          </span>
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center flex-shrink-0">
+              <FileText className="w-5 h-5 text-primary" />
             </div>
-            <div>
-              <h3 className="font-semibold text-lg text-foreground">
-                {documentName}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                PDF Document • Ready to send
-              </p>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{documentName}</p>
+              <p className="text-xs text-muted-foreground">PDF · Ready to send</p>
             </div>
           </div>
         </div>
 
-        <div className="p-6">
-          <h4 className="font-medium text-foreground mb-4 flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Signers ({signers.length})
-          </h4>
-          <div className="space-y-3">
-            {signers.map((signer) => (
-              <div
-                key={signer.id}
-                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: signer.color }}
-                  />
-                  <div>
-                    <p className="font-medium text-foreground">{signer.role}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {signer.email}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {getFieldCount(signer.id)} signature field
-                  {getFieldCount(signer.id) !== 1 ? "s" : ""}
-                </span>
-              </div>
-            ))}
+        {/* Signers card */}
+        <div className="md:col-span-3 bg-card border border-border rounded-xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-border/50 flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Signers
+            </span>
+            <span className="text-xs text-muted-foreground">Fields</span>
           </div>
+          {signers.map((signer, i) => (
+            <div
+              key={signer.id}
+              className={`flex items-center justify-between px-5 py-3 ${i < signers.length - 1 ? "border-b border-border/30" : ""
+                }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                  style={{ backgroundColor: signer.color }}
+                >
+                  {signer.email.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{signer.role}</p>
+                  <p className="text-xs text-muted-foreground">{signer.email}</p>
+                </div>
+              </div>
+              <span className="text-sm tabular-nums text-muted-foreground">
+                {getFieldCount(signer.id)}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Settings */}
-      <div className="space-y-6">
-        <h3 className="font-semibold text-lg text-foreground">Settings</h3>
+      <div className="space-y-3">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          Settings
+        </span>
 
         {/* Identity Verification */}
         <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-primary" />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${requireVerification ? "bg-primary/10" : "bg-muted"
+              }`}>
+              <Lock className={`w-5 h-5 ${requireVerification ? "text-primary" : "text-muted-foreground"}`} />
             </div>
             <div>
-              <Label
-                htmlFor="verification"
-                className="font-medium text-foreground"
-              >
-                Require Identity Verification
+              <Label htmlFor="verification" className="text-sm font-medium text-foreground cursor-pointer">
+                Identity Verification
               </Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Signers must verify their identity before signing
               </p>
             </div>
@@ -127,28 +143,29 @@ const StepReviewSettings = ({
         </div>
 
         {/* Expiry Date */}
-        <div className="p-4 bg-card border border-border rounded-xl">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-amber-600" />
+        <div className="flex items-center justify-between p-4 bg-card border border-border rounded-xl">
+          <div className="flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${expiryDate ? "bg-amber-100 dark:bg-amber-900/30" : "bg-muted"
+              }`}>
+              <Clock className={`w-5 h-5 ${expiryDate ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"}`} />
             </div>
             <div>
-              <Label className="font-medium text-foreground">
-                Expiry Date (Optional)
+              <Label className="text-sm font-medium text-foreground">
+                Expiry Date
               </Label>
-              <p className="text-sm text-muted-foreground">
-                Set a deadline for signatures
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {expiryDate ? format(expiryDate, "MMMM d, yyyy") : "No deadline set (optional)"}
               </p>
             </div>
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className="w-full justify-start">
+              <Button variant="outline" size="sm" className="text-sm h-9">
                 <Calendar className="w-4 h-4 mr-2" />
-                {expiryDate ? format(expiryDate, "PPP") : "Select expiry date"}
+                {expiryDate ? "Change" : "Set date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0" align="end">
               <CalendarComponent
                 mode="single"
                 selected={expiryDate}
@@ -160,13 +177,19 @@ const StepReviewSettings = ({
         </div>
       </div>
 
-      {/* Ready to Send */}
-      <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-        <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-        <p className="text-sm text-green-700 dark:text-green-300">
-          Your agreement is ready to be sent. All signers will receive an email
-          notification.
-        </p>
+      {/* Ready banner */}
+      <div className="flex items-center gap-4 px-5 py-4 bg-emerald-50 dark:bg-emerald-900/15 border border-emerald-200/50 dark:border-emerald-800/30 rounded-xl">
+        <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center flex-shrink-0">
+          <Send className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
+            Ready to send
+          </p>
+          <p className="text-xs text-emerald-600 dark:text-emerald-400">
+            All {signers.length} signers will receive an email with their unique signing link.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { FileText, Users, Shield, ChevronRight } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 import { Agreement } from "@/types/agreement";
 import AgreementStatusBadge from "./AgreementStatusBadge";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 
 interface AgreementListItemProps {
   agreement: Agreement;
 }
+
+const statusDot: Record<string, string> = {
+  draft: "bg-slate-400",
+  waiting_for_signatures: "bg-amber-400",
+  action_required: "bg-blue-500",
+  completed: "bg-emerald-500",
+  expired: "bg-gray-300",
+};
 
 const AgreementListItem = ({ agreement }: AgreementListItemProps) => {
   const navigate = useNavigate();
@@ -17,39 +25,50 @@ const AgreementListItem = ({ agreement }: AgreementListItemProps) => {
     }
   };
 
+  const firstSigner = agreement.signers[0];
+
   return (
     <div
-      className="group flex items-center gap-4 p-4 bg-card border border-border rounded-lg cursor-pointer hover:shadow-soft hover:border-primary/20 transition-all"
+      className="group flex items-center py-2.5 px-4 hover:bg-primary/4 cursor-pointer transition-colors border-b border-border/40 last:border-b-0"
       onClick={handleClick}
     >
-      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-        <FileText className="w-5 h-5 text-primary" />
+      {/* Status dot */}
+      <div className={`w-2 h-2 rounded-full ${statusDot[agreement.status]} mr-3 flex-shrink-0`} />
+
+      {/* Name */}
+      <span className="flex-1 min-w-0 text-[13px] text-foreground truncate group-hover:text-primary transition-colors">
+        {agreement.name}
+      </span>
+
+      {/* First signer */}
+      <span className="text-[12px] text-muted-foreground truncate max-w-[160px] hidden lg:block mr-4">
+        {firstSigner ? firstSigner.email : "—"}
+      </span>
+
+      {/* Signer count */}
+      <span className="text-[12px] text-muted-foreground w-[50px] text-center flex-shrink-0 hidden md:block tabular-nums">
+        {agreement.signers.length}
+      </span>
+
+      {/* Status */}
+      <div className="w-[110px] flex-shrink-0">
+        <AgreementStatusBadge status={agreement.status} />
       </div>
 
-      <div className="flex-1 min-w-0">
-        <h3 className="font-medium text-foreground truncate group-hover:text-primary transition-colors">
-          {agreement.name}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          {formatDistanceToNow(agreement.lastUpdated, { addSuffix: true })}
-        </p>
+      {/* Verification */}
+      <div className="w-[24px] flex-shrink-0 flex justify-center">
+        {agreement.requireVerification && (
+          <Shield className="w-3.5 h-3.5 text-primary" />
+        )}
       </div>
 
-      <AgreementStatusBadge status={agreement.status} />
+      {/* Date */}
+      <span className="text-[12px] text-muted-foreground w-[80px] text-right flex-shrink-0 tabular-nums">
+        {format(agreement.lastUpdated, "MMM d")}
+      </span>
 
-      <div className="flex items-center gap-1.5 text-sm text-muted-foreground min-w-[80px]">
-        <Users className="w-4 h-4" />
-        <span>{agreement.signers.length} signers</span>
-      </div>
-
-      {agreement.requireVerification && (
-        <div className="flex items-center gap-1 text-xs text-primary min-w-[70px]">
-          <Shield className="w-4 h-4" />
-          <span>Verified</span>
-        </div>
-      )}
-
-      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+      {/* Arrow on hover */}
+      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
     </div>
   );
 };

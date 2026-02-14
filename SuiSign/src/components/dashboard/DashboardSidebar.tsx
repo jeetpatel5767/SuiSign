@@ -26,6 +26,15 @@ const statusItems: { id: SidebarCategory; label: string; icon: React.ElementType
   { id: "expired", label: "Expired", icon: Clock },
 ];
 
+/* Bottom nav tabs for mobile — subset of all categories */
+const mobileNavItems: { id: SidebarCategory; label: string; shortLabel: string; icon: React.ElementType }[] = [
+  { id: "inbox", label: "All Agreements", shortLabel: "Home", icon: Inbox },
+  { id: "sent", label: "Sent", shortLabel: "Sent", icon: Send },
+  { id: "drafts", label: "Drafts", shortLabel: "Drafts", icon: FileText },
+  { id: "action_required", label: "Action Required", shortLabel: "Action", icon: AlertCircle },
+  { id: "completed", label: "Completed", shortLabel: "Done", icon: CheckCircle },
+];
+
 const DashboardSidebar = () => {
   const { activeCategory, setActiveCategory, agreements } = useAgreements();
   const navigate = useNavigate();
@@ -84,40 +93,80 @@ const DashboardSidebar = () => {
   };
 
   return (
-    <aside className="w-56 bg-card border-r border-border h-full flex-shrink-0 flex flex-col">
-      {/* Compose Button */}
-      <div className="p-3 pb-1">
-        <Button
-          size="sm"
-          onClick={() => navigate("/create-agreement")}
-          className="w-full gap-1.5 h-9 text-[13px] font-medium shadow-none"
-        >
-          <Plus className="w-4 h-4" />
-          Compose
-        </Button>
-      </div>
+    <>
+      {/* ============ DESKTOP SIDEBAR (md+) — unchanged ============ */}
+      <aside className="hidden md:flex w-56 bg-card border-r border-border h-full flex-shrink-0 flex-col">
+        {/* Compose Button */}
+        <div className="p-3 pb-1">
+          <Button
+            size="sm"
+            onClick={() => navigate("/create-agreement")}
+            className="w-full gap-1.5 h-9 text-[13px] font-medium shadow-none"
+          >
+            <Plus className="w-4 h-4" />
+            Compose
+          </Button>
+        </div>
 
-      {/* Main Navigation */}
-      <nav className="px-2 pt-3 space-y-0.5">
-        {mainItems.map(renderItem)}
+        {/* Main Navigation */}
+        <nav className="px-2 pt-3 space-y-0.5">
+          {mainItems.map(renderItem)}
+        </nav>
+
+        {/* Separator + Status Section */}
+        <div className="px-4 pt-4 pb-1">
+          <span className="text-[10px] font-medium text-foreground/30 uppercase tracking-[0.08em]">Status</span>
+        </div>
+        <nav className="px-2 space-y-0.5">
+          {statusItems.map(renderItem)}
+        </nav>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Trash at bottom */}
+        <nav className="px-2 pb-3 border-t border-border/50 pt-2">
+          {renderItem({ id: "trash", label: "Trash", icon: Trash2 })}
+        </nav>
+      </aside>
+
+      {/* ============ MOBILE BOTTOM NAV (<md) — Google Drive style ============ */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card border-t border-border">
+        <div className="flex items-stretch justify-around px-1">
+          {mobileNavItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeCategory === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveCategory(item.id)}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-0.5 py-2 px-1 flex-1 min-w-0 transition-colors duration-150",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                <div className={cn(
+                  "flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-150",
+                  isActive ? "bg-primary/10" : ""
+                )}>
+                  <Icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.5} />
+                </div>
+                <span className={cn(
+                  "text-[10px] leading-tight truncate max-w-full",
+                  isActive ? "font-semibold" : "font-normal"
+                )}>
+                  {item.shortLabel}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        {/* Safe area for phones with home indicator */}
+        <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
-
-      {/* Separator + Status Section */}
-      <div className="px-4 pt-4 pb-1">
-        <span className="text-[10px] font-medium text-foreground/30 uppercase tracking-[0.08em]">Status</span>
-      </div>
-      <nav className="px-2 space-y-0.5">
-        {statusItems.map(renderItem)}
-      </nav>
-
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* Trash at bottom */}
-      <nav className="px-2 pb-3 border-t border-border/50 pt-2">
-        {renderItem({ id: "trash", label: "Trash", icon: Trash2 })}
-      </nav>
-    </aside>
+    </>
   );
 };
 

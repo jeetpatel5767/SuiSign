@@ -43,17 +43,17 @@ const StepAddSigners = ({ signers, setSigners }: StepAddSignersProps) => {
   const filledCount = signers.filter((s) => s.email.trim() !== "").length;
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-start justify-between">
+    <div className="space-y-5 md:space-y-8">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2">
         <div>
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
+          <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1.5 md:mb-2">
             Add Signers
           </h2>
-          <p className="text-base text-muted-foreground max-w-lg">
+          <p className="text-sm md:text-base text-muted-foreground max-w-lg">
             Add the people who need to sign this document. Each signer will receive an email invitation.
           </p>
         </div>
-        <span className="text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-lg tabular-nums flex-shrink-0 mt-1">
+        <span className="text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-lg tabular-nums flex-shrink-0">
           {filledCount} of {signers.length} ready
         </span>
       </div>
@@ -68,9 +68,9 @@ const StepAddSigners = ({ signers, setSigners }: StepAddSignersProps) => {
             {/* Color accent top bar */}
             <div className="h-1" style={{ backgroundColor: signer.color }} />
 
-            <div className="p-4 flex items-center gap-4">
-              {/* Drag handle */}
-              <GripVertical className="w-4 h-4 text-border flex-shrink-0" />
+            <div className="p-3 md:p-4 flex items-center gap-3 md:gap-4">
+              {/* Drag handle — desktop only */}
+              <GripVertical className="hidden md:block w-4 h-4 text-border flex-shrink-0" />
 
               {/* Avatar */}
               <div

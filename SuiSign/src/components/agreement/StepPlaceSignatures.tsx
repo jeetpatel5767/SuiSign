@@ -54,13 +54,13 @@ const StepPlaceSignatures = ({
   const allSignersHaveFields = signers.every((s) => signersWithFields.has(s.id));
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2">
         <div>
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
+          <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1.5 md:mb-2">
             Place Signature Fields
           </h2>
-          <p className="text-base text-muted-foreground max-w-lg">
+          <p className="text-sm md:text-base text-muted-foreground max-w-lg">
             Select a signer, then click on the document to place their signature field.
           </p>
         </div>
@@ -118,9 +118,9 @@ const StepPlaceSignatures = ({
         })}
       </div>
 
-      {/* Document Preview — full width */}
+      {/* Document Preview — full width, slightly shorter on mobile */}
       <div
-        className="relative bg-white dark:bg-white border border-border rounded-xl shadow-sm aspect-[8.5/11] cursor-crosshair overflow-hidden"
+        className="relative bg-white dark:bg-white border border-border rounded-xl shadow-sm aspect-[8.5/9] md:aspect-[8.5/11] cursor-crosshair overflow-hidden"
         onClick={addSignatureField}
       >
         {/* Header bar */}

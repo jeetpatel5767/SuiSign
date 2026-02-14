@@ -35,29 +35,29 @@ const StepReviewSettings = ({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 md:space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
+        <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1.5 md:mb-2">
           Review & Send
         </h2>
-        <p className="text-base text-muted-foreground max-w-lg">
+        <p className="text-sm md:text-base text-muted-foreground max-w-lg">
           Double-check everything before sending your agreement for signing.
         </p>
       </div>
 
       {/* Three stat cards in a row */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-card border border-border rounded-xl p-5 text-center">
-          <p className="text-3xl font-semibold text-foreground tabular-nums">{signers.length}</p>
-          <p className="text-sm text-muted-foreground mt-1">Signers</p>
+      <div className="grid grid-cols-3 gap-3 md:gap-4">
+        <div className="bg-card border border-border rounded-xl p-3 md:p-5 text-center">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground tabular-nums">{signers.length}</p>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">Signers</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-5 text-center">
-          <p className="text-3xl font-semibold text-foreground tabular-nums">{signatureFields.length}</p>
-          <p className="text-sm text-muted-foreground mt-1">Signature Fields</p>
+        <div className="bg-card border border-border rounded-xl p-3 md:p-5 text-center">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground tabular-nums">{signatureFields.length}</p>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">Fields</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-5 text-center">
-          <p className="text-3xl font-semibold text-foreground tabular-nums">1</p>
-          <p className="text-sm text-muted-foreground mt-1">Page</p>
+        <div className="bg-card border border-border rounded-xl p-3 md:p-5 text-center">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground tabular-nums">1</p>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">Page</p>
         </div>
       </div>
 

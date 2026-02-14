@@ -30,13 +30,13 @@ const StepUploadDocument = ({
   };
 
   return (
-    <div className="space-y-10">
-      {/* Section header — bigger, more commanding */}
+    <div className="space-y-6 md:space-y-10">
+      {/* Section header */}
       <div>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
+        <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1.5 md:mb-2">
           Upload & Name Your Document
         </h2>
-        <p className="text-base text-muted-foreground max-w-lg">
+        <p className="text-sm md:text-base text-muted-foreground max-w-lg">
           Start by giving your agreement a name and uploading the PDF that needs to be signed.
         </p>
       </div>
@@ -66,8 +66,8 @@ const StepUploadDocument = ({
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           className={`border rounded-xl transition-all ${documentFile
-              ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-900/10 p-6"
-              : "border-dashed border-border hover:border-primary/40 hover:bg-primary/3 cursor-pointer p-10"
+            ? "border-emerald-300 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-900/10 p-4 md:p-6"
+            : "border-dashed border-border hover:border-primary/40 hover:bg-primary/3 cursor-pointer p-6 md:p-10"
             }`}
         >
           {documentFile ? (
@@ -124,7 +124,7 @@ const StepUploadDocument = ({
       </div>
 
       {/* Progress checklist — bottom */}
-      <div className="flex items-center gap-6 pt-2">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6 pt-2">
         <div className="flex items-center gap-2 text-sm">
           <CheckCircle className={`w-4 h-4 ${documentName.trim() ? "text-emerald-500" : "text-border"}`} />
           <span className={documentName.trim() ? "text-foreground" : "text-muted-foreground"}>

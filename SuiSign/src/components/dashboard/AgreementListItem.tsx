@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Shield, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight, FileText } from "lucide-react";
 import { Agreement } from "@/types/agreement";
 import AgreementStatusBadge from "./AgreementStatusBadge";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 
 interface AgreementListItemProps {
   agreement: Agreement;
@@ -14,6 +14,14 @@ const statusDot: Record<string, string> = {
   action_required: "bg-blue-500",
   completed: "bg-emerald-500",
   expired: "bg-gray-300",
+};
+
+const statusIconBg: Record<string, string> = {
+  draft: "bg-slate-100 text-slate-500",
+  waiting_for_signatures: "bg-amber-50 text-amber-500",
+  action_required: "bg-blue-50 text-blue-500",
+  completed: "bg-emerald-50 text-emerald-500",
+  expired: "bg-gray-100 text-gray-400",
 };
 
 const AgreementListItem = ({ agreement }: AgreementListItemProps) => {
@@ -32,43 +40,61 @@ const AgreementListItem = ({ agreement }: AgreementListItemProps) => {
       className="group flex items-center py-2.5 px-4 hover:bg-primary/4 cursor-pointer transition-colors border-b border-border/40 last:border-b-0"
       onClick={handleClick}
     >
-      {/* Status dot */}
-      <div className={`w-2 h-2 rounded-full ${statusDot[agreement.status]} mr-3 flex-shrink-0`} />
+      {/* ============ DESKTOP ROW (md+) — unchanged ============ */}
+      {/* Status dot — desktop */}
+      <div className={`hidden md:block w-2 h-2 rounded-full ${statusDot[agreement.status]} mr-3 flex-shrink-0`} />
 
-      {/* Name */}
-      <span className="flex-1 min-w-0 text-[13px] text-foreground truncate group-hover:text-primary transition-colors">
+      <span className="hidden md:block flex-1 min-w-0 text-[13px] text-foreground truncate group-hover:text-primary transition-colors">
         {agreement.name}
       </span>
 
-      {/* First signer */}
       <span className="text-[12px] text-muted-foreground truncate max-w-[160px] hidden lg:block mr-4">
         {firstSigner ? firstSigner.email : "—"}
       </span>
 
-      {/* Signer count */}
       <span className="text-[12px] text-muted-foreground w-[50px] text-center flex-shrink-0 hidden md:block tabular-nums">
         {agreement.signers.length}
       </span>
 
-      {/* Status */}
-      <div className="w-[110px] flex-shrink-0">
+      <div className="hidden md:block w-[110px] flex-shrink-0">
         <AgreementStatusBadge status={agreement.status} />
       </div>
 
-      {/* Verification */}
-      <div className="w-[24px] flex-shrink-0 flex justify-center">
+      <div className="hidden md:flex w-[24px] flex-shrink-0 justify-center">
         {agreement.requireVerification && (
           <Shield className="w-3.5 h-3.5 text-primary" />
         )}
       </div>
 
-      {/* Date */}
-      <span className="text-[12px] text-muted-foreground w-[80px] text-right flex-shrink-0 tabular-nums">
+      <span className="hidden md:block text-[12px] text-muted-foreground w-[80px] text-right flex-shrink-0 tabular-nums">
         {format(agreement.lastUpdated, "MMM d")}
       </span>
 
-      {/* Arrow on hover */}
-      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+      <ArrowRight className="hidden md:block w-3.5 h-3.5 text-muted-foreground/30 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+
+      {/* ============ MOBILE ROW (<md) — Drive file row style ============ */}
+      {/* File icon */}
+      <div className={`md:hidden w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mr-3 ${statusIconBg[agreement.status]}`}>
+        <FileText className="w-5 h-5" strokeWidth={1.5} />
+      </div>
+      <div className="flex md:hidden flex-1 min-w-0 flex-col gap-0.5">
+        <span className="text-[14px] text-foreground truncate font-medium leading-snug">
+          {agreement.name}
+        </span>
+        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+          <AgreementStatusBadge status={agreement.status} />
+          <span className="text-border">·</span>
+          <span className="tabular-nums truncate">
+            {formatDistanceToNow(agreement.lastUpdated, { addSuffix: false })} ago
+          </span>
+          {agreement.requireVerification && (
+            <>
+              <span className="text-border">·</span>
+              <Shield className="w-3 h-3 text-primary flex-shrink-0" />
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

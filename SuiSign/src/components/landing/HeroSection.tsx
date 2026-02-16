@@ -1,24 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-import { useRef } from "react";
-import { useScroll, motion } from "framer-motion";
-import ProductScrollCanvas from "./ProductScrollCanvas";
-import heroImage from "@/assets/hero-image.png";
+import ProductSpline from "./ProductSpline";
 import bgImage from "@/assets/BG.png";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start start", "end end"]
-  });
 
   return (
     <section className="relative min-h-screen">
       {/* Background Image - 60% coverage, cropped */}
-      <div className="absolute inset-0 h-[70%]">
+      <div className="absolute inset-0 h-[100%]">
         <div
           className="w-full h-full bg-cover bg-start bg-no-repeat"
           style={{ backgroundImage: `url(${bgImage})` }}
@@ -58,45 +49,10 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Hero Image Section with Sticky Animation Track */}
-        <div ref={trackRef} className="mt-16 lg:mt-20 relative h-[300vh]">
-          <div className="sticky top-20 h-[70vh] w-full flex items-center justify-center">
-            <div className="relative w-full max-w-5xl h-full">
-              <ProductScrollCanvas
-                folderPath="/HeroSection"
-                frameCount={192}
-                scrollYProgress={scrollYProgress}
-              >
-                {/* Floating elements */}
-                <div className="absolute -left-4 lg:-left-8 top-1/4 glass-card rounded-xl p-3 lg:p-4 animate-float hidden md:block">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">Signature Verified</p>
-                      <p className="text-xs text-muted-foreground">Just now</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute -right-4 lg:-right-8 top-1/3 glass-card rounded-xl p-3 lg:p-4 animate-float-delayed hidden md:block">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">Blockchain Secured</p>
-                      <p className="text-xs text-muted-foreground">Immutable record</p>
-                    </div>
-                  </div>
-                </div>
-              </ProductScrollCanvas>
-            </div>
+        {/* Simplified Rectangle Container with Spline */}
+        <div className="mt-16 lg:mt-24 relative w-full max-w-[1400px] mx-auto px-4 lg:px-6">
+          <div className="w-full h-[60vh] lg:h-[80vh] rounded-[40px] border border-white/10 bg-white/5 overflow-hidden">
+            <ProductSpline />
           </div>
         </div>
 

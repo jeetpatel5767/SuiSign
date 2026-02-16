@@ -95,7 +95,7 @@ const FeaturesSection = () => {
 
               {/* Content */}
               <div
-                className="flex flex-col justify-center text-left"
+                className="flex flex-col justify-center text-left feature-text-content"
                 style={{ width: "100%" }}
               >
                 <div
@@ -172,7 +172,7 @@ const FeaturesSection = () => {
                   div[style*="height: 260px"] {
                     height: 435px !important;
                   }
-                  div[style*="width: 100%"] {
+                  div.feature-text-content {
                     width: 540px !important;
                   }
                 }

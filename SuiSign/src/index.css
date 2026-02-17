@@ -168,6 +168,39 @@
   .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
   }
+
+  /* Infinite Scroll Animation */
+  .ticker-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .ticker-content {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    animation: scroll-left 30s linear infinite;
+  }
+
+  .ticker-item {
+    padding: 0 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @layer utilities {

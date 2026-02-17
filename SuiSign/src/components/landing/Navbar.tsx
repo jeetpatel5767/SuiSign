@@ -1,49 +1,76 @@
-import { FileSignature } from "lucide-react";
+import { useState, useEffect } from "react";
+import Logo from "../../assets/Logo.png";
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="fixed top-6 left-0 right-0 z-50 px-4 lg:px-8">
-      <nav className="max-w-5xl mx-auto flex items-center justify-between px-4 py-2 rounded-[43px] bg-white/[0.133] backdrop-blur-xl shadow-lg">
+    <div className={`fixed top-6 left-0 right-0 z-50 px-4 lg:px-8 transition-all duration-500`}>
+      <nav
+        className={`mx-auto flex items-center transition-all duration-500 ease-in-out px-4 py-2 ${isScrolled
+            ? "max-w-md bg-[#1A1615]/80 backdrop-blur-2xl border border-white/10 rounded-[100px] justify-center py-2.5 shadow-2xl"
+            : "max-w-5xl bg-white/[0.133] backdrop-blur-xl border border-white/5 rounded-[43px] justify-between shadow-lg"
+          }`}
+      >
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center">
-            <FileSignature className="w-4 h-4 text-black" />
-          </div>
-          <span className="text-base font-semibold text-white">Sui Sign</span>
+        <div
+          className={`flex items-center gap-2 transition-all duration-500 overflow-hidden ${isScrolled ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
+            }`}
+        >
+          <img src={Logo} alt="Sui Sign Logo" className="w-8 h-8 object-contain" />
+          <span className="text-base font-semibold text-white whitespace-nowrap">Sui Sign</span>
         </div>
 
         {/* Navigation Links - Center */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className={`flex items-center transition-all duration-500 ${isScrolled ? "gap-6 md:gap-8" : "gap-8 hidden md:flex"}`}>
           <a
             href="#features"
-            className="text-sm font-regular text-white/90 hover:text-white transition-colors"
+            className="text-sm font-regular text-white/90 hover:text-white transition-colors whitespace-nowrap"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="text-sm font-regular text-white/90 hover:text-white transition-colors"
+            className="text-sm font-regular text-white/90 hover:text-white transition-colors whitespace-nowrap"
           >
             How It Works
           </a>
           <a
             href="#benefits"
-            className="text-sm font-regular text-white/90 hover:text-white transition-colors"
+            className="text-sm font-regular text-white/90 hover:text-white transition-colors whitespace-nowrap"
           >
             Benefits
           </a>
           <a
             href="#faq"
-            className="text-sm font-regular text-white/90 hover:text-white transition-colors"
+            className="text-sm font-regular text-white/90 hover:text-white transition-colors whitespace-nowrap"
           >
             FAQ
           </a>
         </div>
 
         {/* CTA Button */}
-        <button className="px-6 py-2.5 rounded-[43px] bg-[#1A1615] text-white text-sm font-regular hover:bg-[#2A2625] transition-colors shadow-md">
-          Try Sui Sign
-        </button>
+        <div
+          className={`transition-all duration-500 overflow-hidden ${isScrolled ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
+            }`}
+        >
+          <button className="px-6 py-2.5 rounded-[43px] bg-[#1A1615] text-white text-sm font-regular hover:bg-[#2A2625] transition-colors shadow-md whitespace-nowrap">
+            Try Sui Sign
+          </button>
+        </div>
       </nav>
     </div>
   );

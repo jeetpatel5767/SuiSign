@@ -55,16 +55,50 @@ const HeroSection = () => {
             <ProductSpline />
           </div>
         </div>
+      </div>
 
-        {/* Social proof logos */}
-        <div className="mt-16 lg:mt-24 text-center animate-fade-up" style={{ animationDelay: "0.6s" }}>
-          <p className="text-sm text-white/70 mb-6">Trusted by World-Class Teams</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12 opacity-60">
-            {["Acme Corp", "TechFlow", "CloudBase", "DataSync", "NetVault"].map((company) => (
-              <div key={company} className="text-lg font-semibold text-white/60">
-                {company}
-              </div>
-            ))}
+      <div className="mt-16 lg:mt-8 text-center animate-fade-up w-full relative z-10" style={{ animationDelay: "0.6s" }}>
+        <p className="text-sm text-white/50 mb-2 uppercase tracking-widest font-medium opacity-60">Trusted by World-Class Teams</p>
+
+        <div className="ticker-container w-full">
+          <div className="ticker-content">
+            {[
+              {
+                name: "Walrus",
+                icon: (
+                  <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40.5 24C40.5 33.1127 33.1127 40.5 24 40.5C14.8873 40.5 7.5 33.1127 7.5 24C7.5 14.8873 14.8873 7.5 24 7.5C33.1127 7.5 40.5 14.8873 40.5 24Z" stroke="currentColor" strokeWidth="3" />
+                    <path d="M16 22C16 22 19 28 24 28C29 28 32 22 32 22" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M19 18H20M28 18H29" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                    <path d="M22 28V36M26 28V36" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                )
+              },
+              {
+                name: "Sui",
+                icon: (
+                  <svg width="28" height="32" viewBox="0 0 22 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 27C17.0751 27 22 22.0751 22 16C22 13.3137 20.5 10 18 7.5C15.5 5 13.5 2.5 11 0C8.5 2.5 6.5 5 4 7.5C1.5 10 0 13.3137 0 16C0 22.0751 4.92487 27 11 27Z" fill="currentColor" />
+                    <path d="M11 20C13.2091 20 15 18.2091 15 16C15 14.7895 14.3182 13.5 13 12.5C11.6818 11.5 12 10 11 9C10 10 10.3182 11.5 9 12.5C7.68182 13.5 7 14.7895 7 16C7 18.2091 8.79086 20 11 20Z" fill="#1e1b1a" />
+                  </svg>
+                )
+              },
+            ].concat(Array(18).fill(null)).map((_, i, arr) => {
+              const company = arr[i % 2];
+              if (!company) return null;
+              return (
+                <div key={`${company.name}-${i}`} className="ticker-item group">
+                  <div className="flex items-center gap-4 text-white/30 hover:text-white/80 transition-all duration-500 cursor-default">
+                    <div className="w-10 h-10 flex items-center justify-center">
+                      {company.icon}
+                    </div>
+                    <span className="text-2xl font-bold tracking-tighter">
+                      {company.name}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

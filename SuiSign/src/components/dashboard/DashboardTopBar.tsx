@@ -21,18 +21,7 @@ const DashboardTopBar = () => {
   return (
     <header className="h-14 border-b border-border bg-card px-4 flex items-center gap-4">
       {/* ============ DESKTOP LAYOUT (md+) ============ */}
-      {/* Logo — hidden on mobile */}
-      <button
-        onClick={() => navigate("/")}
-        className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity mr-2"
-      >
-        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center overflow-hidden">
-          <img src={Logo} alt="SuiSign Logo" className="w-6 h-6 object-contain" />
-        </div>
-        <span className="text-sm font-semibold text-foreground">SuiSign</span>
-      </button>
-
-      {/* Desktop Search Bar */}
+      {/* Desktop Search Bar (md+) */}
       <div className="hidden md:block flex-1 max-w-xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

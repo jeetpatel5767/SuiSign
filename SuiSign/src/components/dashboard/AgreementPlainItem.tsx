@@ -1,8 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { Shield, FileText } from "lucide-react";
 import { Agreement } from "@/types/agreement";
+import { useAgreements } from "@/contexts/AgreementContext";
+import { Checkbox } from "../ui/checkbox";
 import AgreementStatusBadge from "./AgreementStatusBadge";
 import { format, formatDistanceToNow } from "date-fns";
+
+import { cn } from "@/lib/utils";
 
 interface AgreementPlainItemProps {
   agreement: Agreement;
@@ -26,8 +30,18 @@ const statusIconBg: Record<string, string> = {
 
 const AgreementPlainItem = ({ agreement }: AgreementPlainItemProps) => {
   const navigate = useNavigate();
+  const { toggleSelection, selectedIds } = useAgreements();
 
-  const handleClick = () => {
+  const isSelected = selectedIds.includes(agreement.id);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // If we're clicking the checkbox container, it already handles it
+    if ((e.target as HTMLElement).closest('[data-checkbox]')) return;
+
+    toggleSelection(agreement.id);
+  };
+
+  const handleDoubleClick = () => {
     if (agreement.status === "action_required") {
       navigate(`/sign/${agreement.id}`);
     }
@@ -37,11 +51,32 @@ const AgreementPlainItem = ({ agreement }: AgreementPlainItemProps) => {
 
   return (
     <div
-      className="group flex items-center py-2.5 px-4 hover:bg-primary/4 cursor-pointer transition-colors border-b border-border/40 last:border-0"
+      className={cn(
+        "group flex items-center py-2.5 px-4 cursor-pointer transition-colors border-b border-border/40 last:border-0",
+        isSelected ? "bg-primary/8 border-l-2 border-l-primary -ml-[2px]" : "hover:bg-primary/4"
+      )}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
     >
+      {/* Checkbox — desktop & mobile */}
+      <div
+        className="mr-3 flex items-center"
+        data-checkbox
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => toggleSelection(agreement.id)}
+        />
+      </div>
+
       {/* ============ DESKTOP ROW (md+) — unchanged ============ */}
-      <div className={`hidden md:block w-2 h-2 rounded-full ${statusDot[agreement.status]} mr-3 flex-shrink-0`} />
+      <div className={cn(
+        "hidden md:block w-2 h-2 rounded-full mr-3 flex-shrink-0",
+        statusDot[agreement.status]
+      )} />
 
       <span className="hidden md:block flex-1 min-w-0 text-[13px] text-foreground truncate group-hover:text-primary transition-colors">
         {agreement.name}

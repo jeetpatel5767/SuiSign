@@ -14,6 +14,13 @@ interface AgreementContextType {
   filteredAgreements: Agreement[];
   addAgreement: (agreement: Agreement) => void;
   updateAgreement: (id: string, updates: Partial<Agreement>) => void;
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  toggleSelection: (id: string) => void;
+  selectAll: (ids: string[]) => void;
+  clearSelection: () => void;
+  deleteAgreements: (ids: string[]) => void;
+  archiveAgreements: (ids: string[]) => void;
 }
 
 const AgreementContext = createContext<AgreementContextType | undefined>(undefined);
@@ -31,6 +38,7 @@ export const AgreementProvider = ({ children }: { children: ReactNode }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [activeCategory, setActiveCategory] = useState<SidebarCategory>("inbox");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const filterByCategory = (agreement: Agreement): boolean => {
     switch (activeCategory) {
@@ -47,7 +55,7 @@ export const AgreementProvider = ({ children }: { children: ReactNode }) => {
       case "expired":
         return agreement.status === "expired";
       case "trash":
-        return false;
+        return agreement.status === "deleted";
       default:
         return true;
     }
@@ -57,7 +65,7 @@ export const AgreementProvider = ({ children }: { children: ReactNode }) => {
     .filter(filterByCategory)
     .filter((agreement) =>
       agreement.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      agreement.signers.some((s) => 
+      agreement.signers.some((s) =>
         s.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.role.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -71,6 +79,35 @@ export const AgreementProvider = ({ children }: { children: ReactNode }) => {
     setAgreements((prev) =>
       prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
     );
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const selectAll = (ids: string[]) => {
+    setSelectedIds(ids);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds([]);
+  };
+
+  const deleteAgreements = (ids: string[]) => {
+    setAgreements((prev) =>
+      prev.map((a) => (ids.includes(a.id) ? { ...a, status: "deleted" as any } : a))
+    );
+    clearSelection();
+  };
+
+  const archiveAgreements = (ids: string[]) => {
+    // In a real app this might be a separate status, for now let's just update a mock status or property
+    setAgreements((prev) =>
+      prev.map((a) => (ids.includes(a.id) ? { ...a, status: "completed" as any } : a)) // Mocking archive as completed for now or just keeping it
+    );
+    clearSelection();
   };
 
   return (
@@ -87,6 +124,13 @@ export const AgreementProvider = ({ children }: { children: ReactNode }) => {
         filteredAgreements,
         addAgreement,
         updateAgreement,
+        selectedIds,
+        setSelectedIds,
+        toggleSelection,
+        selectAll,
+        clearSelection,
+        deleteAgreements,
+        archiveAgreements,
       }}
     >
       {children}

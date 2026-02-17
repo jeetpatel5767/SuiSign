@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { FileText, Plus, TrendingUp, LayoutGrid, List, ArrowDownUp } from "lucide-react";
+import { FileText, Plus, TrendingUp, LayoutGrid, List, ArrowDownUp, Trash2, Archive, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAgreements } from "@/contexts/AgreementContext";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import ViewModeToggle from "./ViewModeToggle";
 import AgreementCard from "./AgreementCard";
 import AgreementListItem from "./AgreementListItem";
@@ -75,9 +76,31 @@ function groupByTimePeriod(agreements: Agreement[]): { label: string; items: Agr
 }
 
 const AgreementList = () => {
-  const { filteredAgreements, viewMode, activeCategory, agreements } = useAgreements();
+  const {
+    filteredAgreements,
+    viewMode,
+    activeCategory,
+    agreements,
+    selectedIds,
+    selectAll,
+    clearSelection,
+    deleteAgreements,
+    archiveAgreements
+  } = useAgreements();
   const navigate = useNavigate();
   const [mobileView, setMobileView] = useState<MobileViewMode>("grid");
+
+  const allFilteredIds = filteredAgreements.map(a => a.id);
+  const isAllSelected = allFilteredIds.length > 0 && selectedIds.length === allFilteredIds.length;
+  const isAnySelected = selectedIds.length > 0;
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      selectAll(allFilteredIds);
+    } else {
+      clearSelection();
+    }
+  };
 
   const stats = {
     total: agreements.length,
@@ -141,7 +164,13 @@ const AgreementList = () => {
         return (
           <div className="bg-card border border-border rounded-lg overflow-hidden">
             <div className="flex items-center py-2 px-4 border-b border-border bg-muted/30 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-              <div className="w-2 mr-3" />
+              <div className="mr-3 flex items-center">
+                <Checkbox
+                  checked={isAllSelected}
+                  onCheckedChange={handleSelectAll}
+                  className="h-4 w-4 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+              </div>
               <span className="flex-1">Name</span>
               <span className="hidden lg:block max-w-[160px] w-[160px] mr-4">Signer</span>
               <span className="w-[50px] text-center">Count</span>
@@ -162,7 +191,13 @@ const AgreementList = () => {
         return (
           <div className="bg-card border border-border rounded-lg overflow-hidden">
             <div className="flex items-center py-2 px-4 border-b border-border bg-muted/30 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-              <div className="w-2 mr-3" />
+              <div className="mr-3 flex items-center">
+                <Checkbox
+                  checked={isAllSelected}
+                  onCheckedChange={handleSelectAll}
+                  className="h-4 w-4 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+              </div>
               <span className="flex-1 min-w-0">Name</span>
               <span className="w-[110px]">Status</span>
               <span className="w-[50px] text-center">Signers</span>
@@ -214,12 +249,45 @@ const AgreementList = () => {
         {/* Section Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-baseline gap-3">
-            <h2 className="text-base font-medium text-foreground">
-              {sidebarLabels[activeCategory]}
-            </h2>
-            <span className="text-xs text-muted-foreground tabular-nums">
-              {filteredAgreements.length} result{filteredAgreements.length !== 1 ? 's' : ''}
-            </span>
+            {isAnySelected ? (
+              <div className="flex items-center gap-4 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/20">
+                <span className="text-sm font-medium text-primary tabular-nums">
+                  {selectedIds.length} selected
+                </span>
+                <div className="w-px h-4 bg-primary/20" />
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => deleteAgreements(selectedIds)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => archiveAgreements(selectedIds)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-primary hover:bg-primary/10 rounded-md transition-colors"
+                  >
+                    <Archive className="w-3.5 h-3.5" />
+                    Archive
+                  </button>
+                  <button
+                    onClick={clearSelection}
+                    className="ml-1 p-1 hover:bg-primary/10 rounded-full transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5 text-primary/60" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-base font-medium text-foreground">
+                  {sidebarLabels[activeCategory]}
+                </h2>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {filteredAgreements.length} result{filteredAgreements.length !== 1 ? 's' : ''}
+                </span>
+              </>
+            )}
           </div>
           <ViewModeToggle />
         </div>

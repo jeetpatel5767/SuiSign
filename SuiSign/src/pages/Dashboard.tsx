@@ -10,10 +10,12 @@ const Dashboard = () => {
 
   return (
     <AgreementProvider>
-      <div className="min-h-screen bg-background flex flex-col">
-        <DashboardTopBar />
-        <div className="flex flex-1 overflow-hidden">
-          <DashboardSidebar />
+      <div className="h-screen bg-background flex overflow-hidden">
+        {/* Desktop Sidebar — now full height */}
+        <DashboardSidebar />
+
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <DashboardTopBar />
           <AgreementList />
         </div>
 

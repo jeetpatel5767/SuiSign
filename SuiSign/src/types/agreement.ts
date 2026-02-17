@@ -1,9 +1,10 @@
-export type AgreementStatus = 
-  | "draft" 
-  | "waiting_for_signatures" 
-  | "action_required" 
-  | "completed" 
-  | "expired";
+export type AgreementStatus =
+  | "draft"
+  | "waiting_for_signatures"
+  | "action_required"
+  | "completed"
+  | "expired"
+  | "deleted";
 
 export interface Signer {
   id: string;
@@ -36,11 +37,11 @@ export interface Agreement {
 
 export type ViewMode = "grid" | "list" | "plain";
 
-export type SidebarCategory = 
-  | "inbox" 
-  | "sent" 
-  | "drafts" 
-  | "action_required" 
-  | "completed" 
-  | "expired" 
+export type SidebarCategory =
+  | "inbox"
+  | "sent"
+  | "drafts"
+  | "action_required"
+  | "completed"
+  | "expired"
   | "trash";

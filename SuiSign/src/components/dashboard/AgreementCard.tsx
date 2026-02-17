@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Shield, MoreVertical, FileText as FileIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Agreement } from "@/types/agreement";
+import { useAgreements } from "@/contexts/AgreementContext";
+import { Checkbox } from "../ui/checkbox";
+import { cn } from "@/lib/utils";
 import AgreementStatusBadge from "./AgreementStatusBadge";
 import { format, formatDistanceToNow } from "date-fns";
 import { Clock, ArrowRight } from "lucide-react";
@@ -29,8 +32,18 @@ const statusTheme: Record<string, { bg: string; iconBg: string; iconColor: strin
 
 const AgreementCard = ({ agreement }: AgreementCardProps) => {
   const navigate = useNavigate();
+  const { toggleSelection, selectedIds } = useAgreements();
 
-  const handleClick = () => {
+  const isSelected = selectedIds.includes(agreement.id);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // If we're clicking the checkbox container, it already handles it
+    if ((e.target as HTMLElement).closest('[data-checkbox]')) return;
+
+    toggleSelection(agreement.id);
+  };
+
+  const handleDoubleClick = () => {
     if (agreement.status === "action_required") {
       navigate(`/sign/${agreement.id}`);
     }
@@ -44,10 +57,31 @@ const AgreementCard = ({ agreement }: AgreementCardProps) => {
     <>
       {/* ============ DESKTOP CARD (md+) — Original unchanged ============ */}
       <Card
-        className={`hidden md:block group cursor-pointer border-l-[3px] ${statusAccent[agreement.status]} hover:shadow-soft transition-all duration-150`}
+        className={cn(
+          "hidden md:block group cursor-pointer border-l-[3px] transition-all duration-150 relative",
+          statusAccent[agreement.status],
+          isSelected ? "bg-primary/5 ring-2 ring-primary/20" : "hover:shadow-soft"
+        )}
         onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
       >
-        <CardContent className="p-4">
+        {/* Selection Checkbox (Desktop) */}
+        <div
+          className={cn(
+            "absolute top-3 left-3 z-10 transition-opacity",
+            isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          )}
+          data-checkbox
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => toggleSelection(agreement.id)}
+            className="h-4 w-4 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+          />
+        </div>
+
+        <CardContent className="p-4 pt-8">
           <div className="flex items-center justify-between mb-2.5">
             <AgreementStatusBadge status={agreement.status} />
             <div className="flex items-center gap-2">
@@ -113,9 +147,28 @@ const AgreementCard = ({ agreement }: AgreementCardProps) => {
 
       {/* ============ MOBILE CARD (<md) — Google Drive style ============ */}
       <div
-        className="md:hidden group cursor-pointer bg-card border border-border/60 rounded-2xl overflow-hidden active:scale-[0.97] transition-transform duration-100 shadow-sm"
+        className={cn(
+          "md:hidden group cursor-pointer bg-card border rounded-2xl overflow-hidden shadow-sm relative",
+          isSelected ? "border-primary ring-1 ring-primary/20" : "border-border/60 active:scale-[0.97] transition-transform duration-100"
+        )}
         onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
       >
+        {/* Selection Checkbox (Mobile) */}
+        <div
+          className={cn(
+            "absolute top-3 left-3 z-10 transition-opacity",
+            isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          )}
+          data-checkbox
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => toggleSelection(agreement.id)}
+            className="h-4 w-4 border-primary bg-white data-[state=checked]:bg-primary"
+          />
+        </div>
         {/* Top row: icon + title + 3-dot menu (like Drive) */}
         <div className="flex items-start gap-2.5 px-3 pt-3 pb-2">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${theme.iconBg}`}>
@@ -172,10 +225,10 @@ const AgreementCard = ({ agreement }: AgreementCardProps) => {
 
           {/* Status accent bar at bottom */}
           <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${agreement.status === "draft" ? "bg-slate-300" :
-              agreement.status === "waiting_for_signatures" ? "bg-amber-400" :
-                agreement.status === "action_required" ? "bg-blue-500" :
-                  agreement.status === "completed" ? "bg-emerald-500" :
-                    "bg-gray-300"
+            agreement.status === "waiting_for_signatures" ? "bg-amber-400" :
+              agreement.status === "action_required" ? "bg-blue-500" :
+                agreement.status === "completed" ? "bg-emerald-500" :
+                  "bg-gray-300"
             }`} />
         </div>
       </div>

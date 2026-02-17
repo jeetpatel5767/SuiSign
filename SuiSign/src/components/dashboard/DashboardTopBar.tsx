@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FileSignature, Search, Bell, User, Settings, LogOut, HelpCircle, X } from "lucide-react";
+import Logo from "@/assets/Logo.png";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,8 +26,8 @@ const DashboardTopBar = () => {
         onClick={() => navigate("/")}
         className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity mr-2"
       >
-        <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-          <FileSignature className="w-4 h-4 text-primary-foreground" />
+        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center overflow-hidden">
+          <img src={Logo} alt="SuiSign Logo" className="w-6 h-6 object-contain" />
         </div>
         <span className="text-sm font-semibold text-foreground">SuiSign</span>
       </button>

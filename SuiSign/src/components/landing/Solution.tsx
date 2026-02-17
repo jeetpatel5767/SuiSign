@@ -163,9 +163,9 @@ const Solution = () => {
                         ))}
                     </div>
 
-                    {/* ================= TABLET + DESKTOP VISUAL (UNCHANGED) ================= */}
-                    <div className="hidden md:block w-1/2">
-                        <div className="sticky top-24">
+                    {/* ================= TABLET + DESKTOP VISUAL — Centered Sticky ================= */}
+                    <div className="hidden md:block w-1/2 relative">
+                        <div className="sticky top-0 h-screen flex items-center">
                             <div
                                 className="relative w-full max-w-[667px] mx-auto overflow-hidden"
                                 style={{ height: "641px" }}
